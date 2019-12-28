@@ -1,0 +1,54 @@
+import sqlite3
+
+def EntryRecord():
+    conn=sqlite3.connect(r"C:\Users\Vivek\Desktop\Money Expense Tracker Project\Mainfile\Main.db")
+    cur=conn.cursor()
+    cur.execute("CREATE TABLE if not exists METM(Username text,Month_nm text,Use_amt text,Food_amt text,Travel_amt text,Other_amt text)")
+    conn.commit()
+    cur.close()
+    conn.close()
+
+def EnterRec(Username,Month_nm,Use_amt,Food_amt,Travel_amt,Other_amt):
+    conn=sqlite3.connect(r"C:\Users\Vivek\Desktop\Money Expense Tracker Project\Mainfile\Main.db")
+    cur=conn.cursor()
+    cur.execute("INSERT INTO METM(Username,Month_nm,Use_amt,Food_amt,Travel_amt,Other_amt)VALUES(?,?,?,?,?,?)",(Username,Month_nm,Use_amt,Food_amt,Travel_amt,Other_amt))
+    conn.commit()
+    cur.close()
+    conn.close()
+def displaydata():
+    conn=sqlite3.connect(r"C:\Users\Vivek\Desktop\Money Expense Tracker Project\Mainfile\Main.db")
+    cur=conn.cursor()
+    cur.execute("SELECT * FROM METM ")
+    row = cur.fetchall()
+    cur.close()
+    conn.close()
+    return row
+
+def deletedata(Username):
+    conn=sqlite3.connect(r"C:\Users\Vivek\Desktop\Money Expense Tracker Project\Mainfile\Main.db")
+    cur=conn.cursor()
+    cur.execute("DELETE FROM METM where Username=?",  (Username,))
+    row = cur.fetchall()
+    conn.commit()
+    cur.close()
+    conn.close()
+def searchdata(Username="",Month_nm="",Use_amt="",Food_amt="",Travel_amt="",Other_amt=""):
+    conn=sqlite3.connect(r"C:\Users\Vivek\Desktop\Money Expense Tracker Project\Mainfile\Main.db")
+    cur=conn.cursor()
+    cur.execute("SELECT * FROM METM where Username=? OR Month_nm=? OR Use_amt=? OR Food_amt=? OR Travel_amt=? OR Other_amt=?",
+                (Username,Month_nm,Use_amt,Food_amt,Travel_amt,Other_amt))
+    row = cur.fetchall()
+    cur.close()
+    conn.close()
+    return row
+
+def updatedata(Un,Username="",Month_nm="",Use_amt="",Food_amt="",Travel_amt="",Other_amt=""):
+    conn=sqlite3.connect(r"C:\Users\Vivek\Desktop\Money Expense Tracker Project\Mainfile\Main.db")
+    cur=conn.cursor()
+    cur.execute("UPDATE METM SET Username=?,Month_nm=?,Use_amt=?,Food_amt=?,Travel_amt=?,Other_amt=?,where Username=?",
+                (Username,Month_nm,Use_amt,Food_amt,Travel_amt,Other_amt,Un))
+    conn.commit()
+    cur.close()
+    conn.close()
+    return row
+    
