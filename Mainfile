@@ -1,0 +1,190 @@
+from tkinter import *
+import tkinter.messagebox
+import databasefile
+
+class MoneyExpense:
+    
+    def __init__(self,wind):
+
+        #=============================DEFINING THE LAYOUT==============================
+        self.wind=wind
+        self.wind.title("MONEY EXPENSE TRACKER ")
+        self.wind.geometry("1400x1600")
+        self.wind.config(bg='yellow')
+
+        #============================SETTING UP THE INPUT VALUES========================
+
+        Username = StringVar()
+        Month_nm = StringVar()
+        Use_amt  = StringVar()
+        Food_amt = StringVar()
+        Travel_amt= StringVar()
+        Other_amt = StringVar()
+
+        #=====================Function Setup===========================================
+
+        def iexit():
+            iexit=tkinter.messagebox.askyesno("MONEY EXPENSE TRACKER ","Confirm if you want to exit")
+            if iexit > 0:
+                wind.destroy()
+                return
+
+        def cleardata():
+            self.txtUsername.delete(0,END)
+            self.txtMonth_nm.delete(0,END)
+            self.txtUse_amt.delete(0,END)
+            self.txtFood_amt.delete(0,END)
+            self.txtTravel_amt.delete(0,END)
+            self.txtOther_amt.delete(0,END)
+
+        def adddata():
+            if (len(Username.get())!=0):
+                databasefile.EnterRec(Username.get(),Month_nm.get(),Use_amt.get(),Food_amt.get(),Travel_amt.get(),Other_amt.get())
+                DataList.delete(0,END)
+                DataList.insert(END,(Username.get(),Month_nm.get(),Use_amt.get(),Food_amt.get(),Travel_amt.get(),Other_amt.get()))
+
+        def display():
+               DataList.delete(0,END)
+               for row in databasefile.displaydata():
+                   DataList.insert(END,row,str(""))
+
+
+        def datarec(event):
+               global d
+               searchd = DataList.curselection()[0]
+               d = DataList.get(searchd)
+
+               self.txtUsername.delete(0,END)
+               self.txtUsername.insert(END,d[0])
+               self.txtMonth_nm.delete(0,END)
+               self.txtMonth_nm.insert(END,d[1])
+               self.txtUse_amt.delete(0,END)
+               self.txtUse_amt.insert(END,d[2])
+               self.txtFood_amt.delete(0,END)
+               self.txtFood_amt.insert(END,d[3])
+               self.txtTravel_amt.delete(0,END)
+               self.txtTravel_amt.insert(END,d[4])
+               self.txtOther_amt.delete(0,END)
+               self.txtOther_amt.insert(END,d[5])
+
+        def Deletedata():
+               global d
+               if(len(Username.get())!=0):
+                   databasefile.deletedata(d[0])
+                   cleardata()
+                   display()
+
+        def Srchdata():
+             DataList.delete(0,END)
+             for row in databasefile.searchdata(Username.get(),Month_nm.get(),Use_amt.get(),Food_amt.get(),Travel_amt.get(),Other_amt.get()):
+                 DataList.insert(END,row,str(""))
+
+        def update():
+            if (len(Username.get())!=0):
+                databasefile.deletedata(d[0])
+            if (len(Username.get())!=0):
+                databasefile.EnterRec(Username.get(),Month_nm.get(),Use_amt.get(),Food_amt.get(),Travel_amt.get(),Other_amt.get())
+                DataList.delete(0,END)
+                DataList.insert(END,(Username.get(),Month_nm.get(),Use_amt.get(),Food_amt.get(),Travel_amt.get(),Other_amt.get()))    
+            
+            
+               
+               
+
+        #==================== SETTING UP DIFFERENT LAYOUTS AND VIEWS AND FRAMES==========
+        Mainframe=Frame(self.wind,bg="cadet blue")
+        Mainframe.grid()
+
+        Titleframe=Frame(Mainframe, bd=2,padx=60,pady=8,bg="Ghost white",relief=RIDGE)
+        Titleframe.pack(side=TOP)
+
+        self.labeltitle = Label(Titleframe,font=('arial' ,40,'bold'),text="Welcome to Money expense Tracker",bg="Ghost white")
+        self.labeltitle.grid()
+
+        ButtonFrame=Frame(Mainframe,bd=2,width=1200,height=90,padx=60,pady=10,bg="Ghost white",relief=RIDGE)
+        ButtonFrame.pack(side=BOTTOM)
+
+        DataFrame=Frame(Mainframe,bd=1,width=1000,height=400,padx=20,pady=20,bg="Ghost white",relief=RIDGE)
+        DataFrame.pack(side=BOTTOM)
+
+        DataFramelf=LabelFrame(DataFrame,bd=4,width=200,height=600,padx=14,bg="Ghost white",relief=RIDGE,
+                               font=('arial' ,20,'bold'),text="ENTRY RECORD\n")
+        DataFramelf.pack(side=LEFT)
+
+        DataFramert=LabelFrame(DataFrame,bd=4,width=400,height=300,padx=31,pady=3,bg="Ghost white",relief=RIDGE,
+                               font=('arial' ,20,'bold'),text="CHECK RECORD\n")
+        DataFramert.pack(side=RIGHT)
+
+        #=============================SETTING UP LABELS AND ENTRYWIDGETS=================
+
+        self.labelUsername = Label(DataFramelf,font=('arial' ,20,'bold'),text="User name: ",padx=2,pady=3,bg="Ghost white")
+        self.labelUsername.grid(row=0,column=0,sticky=W)
+        self.txtUsername = Entry(DataFramelf,font=('arial',20,'bold'),textvariable=Username,width=39)
+        self.txtUsername.grid(row=0,column=1)
+
+        self.labelMonth_nm = Label(DataFramelf,font=('arial' ,20,'bold'),text="Month name: ",padx=2,pady=3,bg="Ghost white")
+        self.labelMonth_nm.grid(row=1,column=0,sticky=W)
+        self.txtMonth_nm = Entry(DataFramelf,font=('arial',20,'bold'),textvariable=Month_nm,width=39)
+        self.txtMonth_nm.grid(row=1,column=1)
+
+        self.labelUse_amt = Label(DataFramelf,font=('arial' ,20,'bold'),text="Used Amount: ",padx=2,pady=3,bg="Ghost white")
+        self.labelUse_amt.grid(row=2,column=0,sticky=W)
+        self.txtUse_amt = Entry(DataFramelf,font=('arial',20,'bold'),textvariable=Use_amt,width=39)
+        self.txtUse_amt.grid(row=2,column=1)
+
+        self.labelFood_amt = Label(DataFramelf,font=('arial' ,20,'bold'),text="Food Amount: ",padx=2,pady=3,bg="Ghost white")
+        self.labelFood_amt.grid(row=3,column=0,sticky=W)
+        self.txtFood_amt = Entry(DataFramelf,font=('arial',20,'bold'),textvariable=Food_amt,width=39)
+        self.txtFood_amt.grid(row=3,column=1)
+
+        self.labelTravel_amt = Label(DataFramelf,font=('arial' ,20,'bold'),text="Travel Amount: ",padx=2,pady=3,bg="Ghost white")
+        self.labelTravel_amt.grid(row=4,column=0,sticky=W)
+        self.txtTravel_amt = Entry(DataFramelf,font=('arial',20,'bold'),textvariable=Travel_amt,width=39)
+        self.txtTravel_amt.grid(row=4,column=1)
+
+        self.labelOther_amt = Label(DataFramelf,font=('arial' ,20,'bold'),text="Other Amounts: ",padx=2,pady=3,bg="Ghost white")
+        self.labelOther_amt.grid(row=5,column=0,sticky=W)
+        self.txtOther_amt = Entry(DataFramelf,font=('arial',20,'bold'),textvariable=Other_amt,width=39)
+        self.txtOther_amt.grid(row=5,column=1)
+
+        #============================================Scroll Bar============================
+
+        scrollbar=Scrollbar(DataFramert)
+        scrollbar.grid(row=0,column=1,sticky='ns')
+
+        DataList = Listbox(DataFramert,width=41,height=16, font=('arial',10,'bold'),yscrollcommand=scrollbar.set)
+        DataList.bind('<<ListboxSelect>>',datarec)
+        DataList.grid(row=0,column=0,padx=8)
+        scrollbar.config(command=DataList.yview)
+
+        #=====================================Buttons for operation=========================
+
+        self.btaddata = Button(ButtonFrame,text="Add Record ",font=('arial',12,'bold'),height=2,width=16,bd=4,command=adddata)
+        self.btaddata.grid(row=0,column=0)
+
+        self.btnclrdata = Button(ButtonFrame,text="Clear Record",font=('arial',12,'bold'),height=2,width=16,bd=4,command=cleardata)
+        self.btnclrdata.grid(row=0,column=1)
+
+        self.btndeldata = Button(ButtonFrame,text="Delete Record",font=('arial',12,'bold'),height=2,width=16,bd=4,command=Deletedata)
+        self.btndeldata.grid(row=0,column=2)
+
+        self.btndispdata = Button(ButtonFrame,text="Display Record ",font=('arial',12,'bold'),height=2,width=16,bd=4,command=display)
+        self.btndispdata.grid(row=0,column=3)
+
+        self.btnsrcdata = Button(ButtonFrame,text="Search Record ",font=('arial',12,'bold'),height=2,width=16,bd=4,command=Srchdata)
+        self.btnsrcdata.grid(row=0,column=4)
+
+        self.btnupdata = Button(ButtonFrame,text="Update Record ",font=('arial',12,'bold'),height=2,width=16,bd=4,command=update)
+        self.btnupdata.grid(row=0,column=5)
+
+        self.btnexit = Button(ButtonFrame,text="Exit from Software ",font=('arial',12,'bold'),height=2,width=16,bd=4,command=iexit)
+        self.btnexit.grid(row=0,column=6)
+
+        
+        
+        
+
+if __name__=='__main__':
+    wind=Tk()
+    app = MoneyExpense(wind)
+    wind.mainloop()
